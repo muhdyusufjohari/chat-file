@@ -54,28 +54,30 @@ if prompt := st.chat_input("What is your question?"):
         st.markdown(prompt)
 
     # Prepare messages including file content if available
-    messages = st.session_state.messages.copy()
+    messages = []
     if 'file_content' in st.session_state:
-        messages.insert(0, {
+        messages.append({
             "role": "system",
             "content": f"The following is the content of an uploaded file. Please use this information to answer the user's questions:\n\n{st.session_state.file_content}"
         })
+    messages.extend(st.session_state.messages)
 
     # Generate response
     with st.chat_message("assistant"):
         message_placeholder = st.empty()
         full_response = ""
-        for response in client.chat.completions.create(
-            messages=[
-                {"role": m["role"], "content": m["content"]}
-                for m in messages
-            ],
-            model=model,
-            stream=True,
-        ):
-            full_response += (response.choices[0].delta.content or "")
-            message_placeholder.markdown(full_response + "▌")
-        message_placeholder.markdown(full_response)
+        try:
+            for response in client.chat.completions.create(
+                messages=messages,
+                model=model,
+                stream=True,
+            ):
+                full_response += (response.choices[0].delta.content or "")
+                message_placeholder.markdown(full_response + "▌")
+            message_placeholder.markdown(full_response)
+        except Exception as e:
+            st.error(f"An error occurred: {str(e)}")
+            st.stop()
     st.session_state.messages.append({"role": "assistant", "content": full_response})
 
 # Clear chat history and uploaded file
@@ -84,3 +86,10 @@ if st.button("Clear Chat History and Uploaded File"):
     if 'file_content' in st.session_state:
         del st.session_state.file_content
     st.rerun()
+
+# Debug information
+st.sidebar.write("Debug Information:")
+st.sidebar.write(f"File uploaded: {'Yes' if 'file_content' in st.session_state else 'No'}")
+if 'file_content' in st.session_state:
+    st.sidebar.write(f"File content length: {len(st.session_state.file_content)} characters")
+st.sidebar.write(f"Number of messages: {len(st.session_state.messages)}")
