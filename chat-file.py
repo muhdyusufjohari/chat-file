@@ -85,6 +85,7 @@ if st.button("Clear Chat History and Uploaded File"):
     st.session_state.messages = []
     if 'file_content' in st.session_state:
         del st.session_state.file_content
+    st.success("Chat history and uploaded file have been cleared.")
     st.rerun()
 
 # Debug information
