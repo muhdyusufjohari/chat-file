@@ -16,7 +16,7 @@ else:
 st.title("Chatbot using Groq API")
 
 # Model selection
-model = st.selectbox("Choose a model:", ["llama2-70b-4096", "mixtral-8x7b-32768"])
+model = st.selectbox("Choose a model:", ["llama2-8b-chat", "mixtral-8x7b-32768"])
 
 # File upload
 uploaded_file = st.file_uploader("Choose a file", type=['txt', 'pdf', 'docx'])
