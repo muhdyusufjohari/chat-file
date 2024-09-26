@@ -16,7 +16,7 @@ else:
 st.title("Chatbot using Groq API")
 
 # Model selection
-model = st.selectbox("Choose a model:", ["llama-3.1-8b-instant", "mixtral-8x7b-32768"])
+model = st.selectbox("Choose a model:", ["llama2-8b-chat", "mixtral-8x7b-32768"])
 
 # File upload
 uploaded_file = st.file_uploader("Choose a file", type=['txt', 'pdf', 'docx'])
@@ -85,7 +85,6 @@ if st.button("Clear Chat History and Uploaded File"):
     st.session_state.messages = []
     if 'file_content' in st.session_state:
         del st.session_state.file_content
-    st.success("Chat history and uploaded file have been cleared.")
     st.rerun()
 
 # Debug information
